@@ -3,7 +3,6 @@ import tokenService from "@/services/token.service";
 interface ProtectedRouteProps {
   roleAllowed: string[]; // Array of allowed roles
 }
-
 const AUTH_ROUTES = [
   "/admin/login",
   "/admin/forgot-password",
@@ -19,22 +18,22 @@ const isRouteMatch = (pathname: string) => {
     return route === pathname; // Match static routes
   });
 };
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ roleAllowed }) => {
-  const userRole = tokenService?.getUserRoleFromCookie();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ roleAllowed }) => {  
+  const userRole = "Admin";
+
+  // const userRole = tokenService?.getUserRoleFromCookie();
+  console.log("userRole userRole userRole", userRole);
   const { pathname } = useLocation();
   const accessToken = tokenService.getLocalAccessToken();
-
   if (!accessToken && !isRouteMatch(pathname)) {
     return <Navigate to="/admin/login" />;
   }
-
   if (accessToken && isRouteMatch(pathname)) {
     return <Navigate to="/" />;
   }
   if (accessToken && (!userRole || !roleAllowed.includes(userRole))) {
-    return <Navigate to="/" />;
+    return <Navigate to="/404" />;
   }
   return <Outlet />;
 };
-
 export default ProtectedRoute;

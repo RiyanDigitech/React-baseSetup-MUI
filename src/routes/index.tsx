@@ -24,10 +24,10 @@ import ForGetPassword from "@/pages/auth/forget-password";
 import LoginPage from "@/pages/auth/login-page";
 import FranchiseLeadList from "@/pages/lead-management/targeted-franchise-lead-list";
 import FranchiseSendQuotation from "@/pages/send-quotation/franchise-send-quotation";
-import PrivacyPolicy from "@/pages/privacy-policy";
-import TermsCondition from "@/pages/terms-condition";
 import FranchiseComplaintList from "@/pages/complaint-details/franchise-complaint-list";
 import FranchiseDashboardPage from "@/pages/dashboard/dashboard";
+import Customer from "@/pages/customer/customer";
+import ErrorPage from "@/pages/ErrorPAge/ErrorPage";
 // import AddressAutocomplete from "@/pages/location";
 
 const router = createBrowserRouter([
@@ -44,16 +44,7 @@ const router = createBrowserRouter([
         element: <LoginPage />,
         index: true,
       },
-      {
-        path: "/admin/privacy-policy",
-        element: <PrivacyPolicy />,
-        index: true,
-      },
-      {
-        path: "/admin/terms-condition",
-        element: <TermsCondition />,
-        index: true,
-      },
+      
       {
         path: "/admin/change-password",
         element: <ChangePassword />,
@@ -81,7 +72,18 @@ const router = createBrowserRouter([
       },
     ],
   },
-
+//Customer
+{
+    element: <ProtectedRoute roleAllowed={["Customer"]} />,
+    children: [
+      {
+        path: "/customer",
+        element: <Customer />,
+        index: true,
+      },
+      
+    ],
+  },
   // Admin-only routes
   {
     element: <ProtectedRoute roleAllowed={["Admin"]} />,
@@ -113,7 +115,10 @@ const router = createBrowserRouter([
   {
     path: "/admin/login",
     element: <LoginPage />,
-  },
+  },          
+  { path: "/404", element: <ErrorPage /> },
+
 ]);
 
 export default router;
+// here we make a protection of routes which is used to protect the routes based on user roles.

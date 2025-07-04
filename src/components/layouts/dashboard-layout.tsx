@@ -1,25 +1,60 @@
-
 import { useState, useEffect } from "react";
-import { Box, AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, ListItemButton } from "@mui/material";
-import { Menu as MenuIcon, Dashboard as DashboardIcon, ShoppingBag as ShoppingBagIcon, Person as PersonIcon, Logout as LogoutIcon } from "@mui/icons-material";
+import {
+  Box,
+  AppBar,
+  Toolbar,
+  Typography,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
+  ListItemButton,
+} from "@mui/material";
+import {
+  Menu as MenuIcon,
+  Dashboard as DashboardIcon,
+  ShoppingBag as ShoppingBagIcon,
+  Person as PersonIcon,
+  Logout as LogoutIcon,
+} from "@mui/icons-material";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
-import ToggleButton from '@mui/material/ToggleButton';
-import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
+import ToggleButton from "@mui/material/ToggleButton";
+import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
 
 const DashboardLayout = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(false); 
+   const [customer, setCustomers] = useState<any>([]);
   const [see, setSee] = useState(window.innerWidth >= 768); // Mobile ya desktop check
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
-
+const userRole = "Admin"
+  // Simple menu items (role-based condition hata di)
+  const menuItems = [
+    { key: "/", icon: <DashboardIcon />, label: "Dashboard" },
+    { key: "/franchise-list", icon: <ShoppingBagIcon />, label: "Franchise" },
+    { key: "/account", icon: <PersonIcon />, label: "Account" },
+  ];
+  const CustomersMenu =  [
+    { key: "/customer", icon: <DashboardIcon />, label: "Dashboard" },
+   
+  ]
   // Window resize pe responsiveness handle karna
   useEffect(() => {
     const handleResize = () => setSee(window.innerWidth >= 768);
     window.addEventListener("resize", handleResize);
+    if(userRole === "Customer") {
+      setCustomers(CustomersMenu)
+    }
+    else if(userRole === "Admin") {
+      setCustomers(menuItems)
+
+    }
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [userRole]);
 
   // Token check karna
   // useEffect(() => {
@@ -37,15 +72,13 @@ const DashboardLayout = () => {
     navigate("/admin/login");
   };
 
-  // Simple menu items (role-based condition hata di)
-  const menuItems = [
-    { key: "/", icon: <DashboardIcon />, label: "Dashboard" },
-    { key: "/franchise", icon: <ShoppingBagIcon />, label: "Franchise" },
-    { key: "/account", icon: <PersonIcon />, label: "Account" },
-  ];
-
+//  const menuItems = [
+//     { key: "/customer", icon: <DashboardIcon />, label: "Dashboard" },
+//     { key: "/franchise", icon: <ShoppingBagIcon />, label: "Franchise" },
+//     { key: "/account", icon: <PersonIcon />, label: "Account" },
+//   ];
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh" }}>
+    <Box sx={{ display: "flex", minHeight: "100vh"}}>
       {/* Sidebar (Drawer) */}
       <Drawer
         variant="permanent"
@@ -64,55 +97,111 @@ const DashboardLayout = () => {
       >
         <Toolbar />
         <List>
-          {menuItems.map((item) => (
-            <ListItem component="button" key={item.key}  sx={{ color: "#fff" }}>
-              <ListItemIcon sx={{ color: "#fff", minWidth: collapsed ? "40px" : "auto" }}>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.label} sx={{ display: collapsed ? "none" : "block" }} />
+            {customer?.map((item,ind) => (
+            <ListItem component="button" key={ind} sx={{ color: "#fff" }} onClick={() => {
+                navigate(item?.key);
+                // setCollapsed(false);
+              }}>
+              <ListItemIcon
+                sx={{ color: "#fff", minWidth: collapsed ? "40px" : "auto" }}
+              >
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText
+                primary={item.label}
+                sx={{ display: collapsed ? "none" : "block" }}
+              />
             </ListItem>
-          ))}
-          <ListItem component="button" onClick={handleLogout} sx={{ color: "#fff" }}>
-            <ListItemIcon sx={{ color: "#fff" }}><LogoutIcon /></ListItemIcon>
-            <ListItemText primary="Logout" sx={{ display: collapsed ? "none" : "block" }} />
+          ))} 
+        
+          <ListItem
+            component="button"
+            onClick={handleLogout}
+            sx={{ color: "#fff" }}
+          >
+            <ListItemIcon sx={{ color: "#fff" }}>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Logout"
+              sx={{ display: collapsed ? "none" : "block" }}
+            />
           </ListItem>
         </List>
+        
       </Drawer>
-<Drawer
+      {/* {on small width icon} */}
+      <Drawer
         variant="temporary"
         open={collapsed}
         onClose={() => setCollapsed(false)}
-        sx={{ display: { xs: "block", sm: "none" }, "& .MuiDrawer-paper": { width: 240 } }}
+        sx={{
+          display: { xs: "block", sm: "none" },
+          "& .MuiDrawer-paper": { width: 240 },
+        }}
       >
         <List>
-          {menuItems.map((item) => (
-            <ListItem component="button" key={item.key} onClick={() => { navigate(item.key); setCollapsed(false); }}>
-              <ListItemIcon>{item.icon}</ListItemIcon> {/* Theek kiya yahan */}
+          {customer?.map((item) => (
+            <ListItem
+              component="button"
+              key={item.key}
+              // onClick={() => navigate(item.key)} // Navigate to the item's key (route path)
+              onClick={() => {
+                navigate(item.key);
+                setCollapsed(false);
+              }}
+              className="!text-blue-700 border-2"
+            >
+              <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.label} />
             </ListItem>
           ))}
-          <ListItemButton onClick={() => { handleLogout(); setCollapsed(false); }}>
-            <ListItemIcon><LogoutIcon /></ListItemIcon> {/* Theek kiya yahan */}
+          <ListItemButton
+            onClick={() => {
+              handleLogout();
+              setCollapsed(false);
+            }}
+          >
+            <ListItemIcon>
+              <LogoutIcon />
+            </ListItemIcon>
             <ListItemText primary="Logout" />
           </ListItemButton>
         </List>
       </Drawer>
 
       <Box sx={{ flexGrow: 1 }}>
-
         {/* //Header */}
 
-        <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer }} className="!bg-white">
+        <AppBar
+          position="fixed"
+          sx={{ zIndex: (theme) => theme.zIndex.drawer }}
+          className="!bg-white"
+        >
           <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={() => setCollapsed(!collapsed)} sx={{ mr: 2, display: { sm: "none" } }}>
+            <IconButton
+              edge="start"
+              onClick={() => setCollapsed(!collapsed)}
+              sx={{
+                mr: 2,
+                display: { xs: "block", md: "none" }, // Show on xs and sm, hide on md and above
+              }}
+            >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" noWrap className="!text-blue-700" >
+            <Typography variant="h6" noWrap className="!text-blue-700">
               PricePatrol.pk
             </Typography>
-            <Box sx={{ flexGrow: 1 }} /> 
-            <ToggleButton value="left" aria-label="left aligned" onClick={() => setCollapsed(!collapsed)} sx={{ display: { xs: "none", sm: "block" } }} className="border-[1px] border-white"
-              >
-        <FormatAlignLeftIcon className=" text-blue-600"/>
-      </ToggleButton>
+            <Box sx={{ flexGrow: 1 }} />
+            <ToggleButton
+              value="left"
+              aria-label="left aligned"
+              onClick={() => setCollapsed(!collapsed)}
+              sx={{ display: { xs: "none", sm: "block" } }}
+              className="border-[1px] border-white"
+            >
+              <FormatAlignLeftIcon className=" text-blue-600" />
+            </ToggleButton>
             {/* <IconButton color="inherit" onClick={handleLogout}>
               <LogoutIcon />
             </IconButton> */}
@@ -121,7 +210,7 @@ const DashboardLayout = () => {
 
         {/* // Main content area Body*/}
 
-        <Box component="main" sx={{ mt: "64px", p: 3 }}>
+        <Box component="main" sx={{ mt: "64px" }} className="">
           <Outlet />
         </Box>
       </Box>

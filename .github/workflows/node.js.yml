@@ -1,5 +1,5 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+# # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
 name: Node.js CI
 
@@ -36,3 +36,35 @@ jobs:
         npm run deploy -- -u "github-actions-bot <support+actions@github.com>"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+# name: Deploy React to GitHub Pages
+
+# on:
+#   push:
+#     branches:
+#       - master
+
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout Code
+#         uses: actions/checkout@v3
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: 22
+
+#       - name: Install Dependencies
+#         run: npm install
+
+#       - name: Build React App
+#         run: npm run build --if-present
+
+#       - name: Deploy to GitHub Pages
+#         uses: actions/deploy-pages@v2
+#         with:
+#           artifact_name: github-pages
+#           publish_dir: ./build

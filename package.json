@@ -6,14 +6,13 @@
   "homepage": "https://muhammadriyansadiq.github.io/React-baseSetup-MUI",
 
   "scripts": {
-      "deploy": "gh-pages -d build",
-    "dev": "vite",
-    "build": "react-scripts build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "test":"react-scripts test"
-  },
-  "dependencies": {
+  "deploy": "gh-pages -d dist",
+  "dev": "vite",
+  "build": "vite build",
+  "lint": "eslint .",
+  "preview": "vite preview"
+}
+,  "dependencies": {
     "@edtr-io/mathquill": "^0.11.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",

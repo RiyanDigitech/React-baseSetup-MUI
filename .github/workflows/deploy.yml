@@ -1,67 +1,33 @@
 # name: Deploy React to GitHub Pages
 
-# on:
-#   push:
-#     branches:
-#       - master
+on:
+  push:
+    branches:
+      - master
 
-# jobs:
-#   build-and-deploy:
-#     runs-on: ubuntu-latest
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
 
-#     steps:
-#       - name: Checkout Code
-#         uses: actions/checkout@v3
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-#       - name: Set up Node.js
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: 22
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
 
-#       - name: Install Dependencies
-#         run: npm install --legacy-peer-deps
+      - name: Install Dependencies
+        run: npm install --legacy-peer-deps
 
-#       - name: Build React App
-#         run: npm run build --if-present
+      - name: Build React App
+        run: npm run build --if-present
 
-#       - name: Deploy to GitHub Pages
-#         uses: actions/deploy-pages@v2
-#         with:
-#           artifact_name: github-pages
-#           publish_dir: ./dist
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v2
+        with:
+          artifact_name: github-pages
+          publish_dir: ./dist
  
-    name: Deploy React to GitHub Pages
-
-
-    on:
-       push:
-         branches:
-           - master
-       permissions:
-       id-token: write
-       pages: write
-       contents: read
-       jobs:
-       build-and-deploy:
-         runs-on: ubuntu-latest
-         steps:
-           - name: Checkout Code
-             uses: actions/checkout@v3
-           - name: Set up Node.js
-             uses: actions/setup-node@v3
-             with:
-               node-version: 22
-           - name: Install Dependencies
-             run: npm install
-             working-directory: .
-           - name: Build React App
-             run: npm run build --if-present
-             working-directory: .
-           - name: Upload Artifact
-             uses: actions/upload-pages-artifact@v3
-             with:
-               path: ./dist
-           - name: Deploy to GitHub Pages
-             uses: actions/deploy-pages@v2
-             with:
-               artifact_name: github-pages
+   
